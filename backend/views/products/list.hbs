@@ -1,0 +1,32 @@
+<div class="page-header">
+    <h1>Lista de Productos</h1>
+    <a href="/products/create" class="btn btn-primary">+ Nuevo Producto</a>
+</div>
+
+{{#if products.length}}
+    <div class="products-grid">
+        {{#each products}}
+        <div class="product-card">
+            <div class="product-image">
+                <img src="/uploads/{{this.imagen}}" alt="{{this.nombre}}" onerror="this.src='/images/default.jpg'">
+            </div>
+            <div class="product-info">
+                <h3>{{this.nombre}}</h3>
+                <p class="product-price">${{this.precio}}</p>
+                <p class="product-description">{{this.descripcion}}</p>
+                <div class="product-actions">
+                    <a href="/products/edit/{{this._id}}" class="btn btn-secondary">Editar</a>
+                    <form action="/products/delete/{{this._id}}" method="POST" style="display: inline;" onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    {{else}}
+    <div class="empty-state">
+        <p>No hay productos registrados.</p>
+        <a href="/products/create" class="btn btn-primary">Crear primer producto</a>
+    </div>
+    {{/if}}

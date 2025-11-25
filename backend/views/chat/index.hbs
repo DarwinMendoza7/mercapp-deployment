@@ -1,0 +1,71 @@
+<div class="page-header">
+    <h1>Chat en Tiempo Real</h1>
+    <a href="/products" class="btn btn-secondary">Volver a Productos</a>
+</div>
+
+<div class="chat-container">
+    <div class="chat-box">
+        <div id="messages" class="messages"></div>
+
+        <form id="chat-form" class="chat-form">
+            <input 
+                type="text"
+                id="message-input"
+                placeholder="Escribe un mensaje..."
+                autocomplete="off"
+                required>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </form>
+    </div>
+
+    <div class="chat-info">
+        <p>Conectado como: <strong>{{username}}</strong></p>
+        <p class="chat-hint">Los mensajes son visibles para todos los usuarios conectados</p>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    const form = document.getElementById('chat-form');
+    const input = document.getElementById('message-input');
+    const messages = document.getElementById('messages');
+    const username = '{{username}}';
+
+    //Enviar mensaje
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        if(input.value.trim()) {
+            socket.emit('chat-message', {
+                username: username,
+                message: input.value.trim()
+            });
+            input.value = '';
+        }
+    });
+
+    //Recibir mensajes
+    socket.on('chat-message', (data) => {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = data.username == username ? 'message own-message' : 'message'; 
+
+        messageDiv.innerHTML = `
+            <div class="message-header">
+                <span class="message-user">${data.username}</span>
+                <span class="message-time">${data.timestamp}</span>
+            </div>
+            <div class="message-content">${escapeHtml(data.message)}</div>
+        `;
+
+        messages.appendChild(messageDiv);
+        messages.scrollTop = messages.scrollHeight;
+    });
+
+    //Función para escapar HTML y prevenir XSS
+    function escapeHtml(text){
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+</script>

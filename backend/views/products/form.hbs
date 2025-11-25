@@ -1,0 +1,109 @@
+<div class="page-header">
+    <h1>{{#if isEdit}}Editar Producto{{else}}Crear Producto{{/if}}</h1>
+        <a href="/products" class="btn btn-secondary"><- Volver</a>
+</div>
+
+<div class="form-container">
+    {{#if errors}}
+    <div class="alert alert-error">
+        <ul>
+            {{#each errors}}
+            <li>{{this.msg}}</li>
+            {{/each}}
+        </ul>
+    </div>
+    {{/if}}
+
+    <form action="/products/{{#if isEdit}}edit/{{product._id}}{{else}}create{{/if}}"
+
+    method="POST"
+    enctype="multipart/form-data"
+    class="product-form">
+    
+    <div class="form-group">
+        <label for="nombre">Nombre del Producto *</label>
+        <input
+        type="text"
+        id="nombre"
+        name="nombre"
+        value="{{product.nombre}}"
+        required
+        placeholder="Ej: Laptop Dell Inspiron">
+    </div>
+
+    <div class="form-group">
+        <label for="precio">Precio *</label>
+        <input
+        type="number"
+        id="precio"
+        name="precio"
+        value="{{product.precio}}"
+        step="0.01"
+        min="0"
+        required
+        placeholder="Ej:899.99">
+    </div>
+
+    <div class="form-group">
+        <label for="descripcion">Descripción *</label>
+        <textarea
+        id="descripcion"
+        name="descripcion"
+        rows="4"
+        required
+        placeholder="Describe el producto...">{{product.descripcion}}</textarea>
+    </div>
+
+    <!-- Campo categoría -->
+    <div class="form group">
+        <label for="categoryId">Categoria *</label>
+        <select id="categoryId" name="categoryId" required>
+            <option value="">Selecciona una categoría</option>
+            <option value="1" {{#ifEquals product.categoryId 1}}selected{{/ifEquals}}>Todos</option>
+            <option value="2" {{#ifEquals product.categoryId 2}}selected{{/ifEquals}}>Electrónica</option>
+            <option value="3" {{#ifEquals product.categoryId 3}}selected{{/ifEquals}}>Hogar</option>
+            <option value="4" {{#ifEquals product.categoryId 4}}selected{{/ifEquals}}>Deportes</option>
+            <option value="5" {{#ifEquals product.categoryId 5}}selected{{/ifEquals}}>Ropa</option>
+        </select>
+    </div>
+
+    //Campo stock
+    <div class="form-group">
+        <label for="stock">Stock Disponible *</label>
+        <input
+        type="number"
+        id="stock"
+        name="stock"
+        value="{{#if product.stock}}{{product.stock}}{{else}}0{{/if}}"
+        min="0"
+        required
+        placeholder="Ej:50">
+        <small>Cantidad de unidades disponibles</small>
+    </div>
+
+    <div class="form-group">
+        <label for="imagen">Imagen del Producto</label>
+        {{#if product.imagen}}
+            <div class="current-image">
+                <img src="/uploads/{{product.imagen}}" alt="Imagen actual" style="max-width: 200px;">
+                <p><small>Imagen actual. Sube una nueva para reemplazarla</small></p>
+            </div>
+            {{/if}}
+            <input
+            type="file"
+            id="imagen"
+            name="imagen"
+            accept="image/jpeg, image/jpg, image/png, image/gif">
+            <small>Formatos permitidos: JPG, PNG, GIF. Tamaño máximo: 5MB</small>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            {{#if isEdit}}Actualizar Producto{{else}}Crear Producto{{/if}}
+        </button>
+        <a href="/products" class="btn btn-secondary">Cancelar</a>
+    </div>
+
+    </form>
+
+</div>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}} - MiInventarioExpress</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">MiInventarioExpress</a>
+            <ul class="nav-menu">
+                <li><a href="/products">Productos</a></li>
+                {{#if user}}
+                <li><span class="user-name">Hola, {{user.username}}</span></li>
+                <li><a href="/chat">Chat</a></li>
+                <li><a href="/auth/logout">Cerrar Sesión</a></li>
+                {{else}}
+                <li><a href="/auth/login">Iniciar Sesión</a></li>
+                {{/if}}
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        {{{body}}}
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 MiInventarioExpress - Gestión de Productos</p>
+    </footer>
+</body>
+</html>

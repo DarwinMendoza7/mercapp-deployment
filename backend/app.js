@@ -12,28 +12,30 @@ const PORT = process.env.PORT || 3000;
 //Conectar a MongoDB
 connectDB();
 
-//Configurar CORS Dinámico
+// ========== CONFIGURAR CORS DINÁMICO SOLO PARA /api ==========
 const allowedOrigins = [
     process.env.FRONTEND_URL,
     process.env.NETLIFY_URL,
-    'http://localhost:5173' //Para desarrollo local
-].filter(Boolean); //Eliminar valores undefined
+    'http://localhost:5173' // Para desarrollo local
+].filter(Boolean); // Eliminar valores undefined
 
-app.use(cors({
-    origin: function (origin, callback){
-        //Permitir requests sin origin (mobile apps, curl, Postman, etc)
-        if(!origin) return callback(null, true);
-
-        if(allowedOrigins.indexOf(origin) !== -1){
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Permitir requests sin origin (mobile apps, curl, Postman, etc)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
-        } else{
-            console.log('Origen Bloqueado por CORS:', origin);
+        } else {
+            console.log('❌ Origen bloqueado por CORS:', origin);
             callback(new Error('No permitido por CORS'));
         }
     },
-    credentials:true
-    
-}));
+    credentials: true
+};
+
+// Aplicar CORS solo a rutas /api
+app.use('/api', cors(corsOptions));
 
 //Configurar Handlebars
 app.engine('hbs', engine({
@@ -76,17 +78,17 @@ app.use((req, res, next) => {
     next();
 });
 
-//Endpoint de Health Check
+// ========== ENDPOINT DE HEALTH CHECK ==========
 app.get('/health', (req, res) => {
-    res.json({
-        status: 'OK',
+    res.json({ 
+        status: 'OK', 
         timestamp: new Date().toISOString(),
         env: process.env.NODE_ENV || 'development',
         mongodb: 'connected'
     });
 });
 
-//Rutas
+//Rutas existentes (Handlebars)
 const productRoutes = require('./routes/products');
 const authRoutes =  require('./routes/auth');
 const chatRoutes = require('./routes/chat');
@@ -95,7 +97,7 @@ app.use('/products', productRoutes);
 app.use('/auth', authRoutes);
 app.use('/chat', chatRoutes);
 
-//Rutas API REST 
+//Rutas API REST (para Vue 3)
 const apiRoutes = require('./routes/api');
 app.use('/api', apiRoutes);
 
@@ -110,12 +112,8 @@ const socketIo = require('socket.io');
 
 const server = http.createServer(app);
 const io = socketIo(server, {
-    cors: {
-        origin: allowedOrigins,
-        methods: ['GET', 'POST'],
-        credentials: true
-    }
-}) ;
+    cors: corsOptions
+});
 
 //Configurar Socket.io
 io.on('connection', (socket) => {
@@ -141,11 +139,11 @@ io.on('connection', (socket) => {
     });
 });
 
-//Iniciar sesión en puerto dinámico
+// ========== INICIAR SERVIDOR EN PUERTO DINÁMICO ==========
 server.listen(PORT, '0.0.0.0', () => {
-    console.log(`Servidor corriendo en puerto ${PORT}`);
-    console.log(`API REST: http://localhost:${PORT}/api`);
-    console.log(`Health Check: http://localhost:${PORT}/health`);
-    console.log(`Entorno: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`CORS habilitado para: `, allowedOrigins);
+    console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
+    console.log(`📦 API REST: http://localhost:${PORT}/api`);
+    console.log(`💚 Health Check: http://localhost:${PORT}/health`);
+    console.log(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`✅ CORS habilitado para:`, allowedOrigins);
 });

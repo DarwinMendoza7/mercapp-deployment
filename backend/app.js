@@ -16,7 +16,9 @@ connectDB();
 const allowedOrigins = [
     process.env.FRONTEND_URL,
     process.env.NETLIFY_URL,
-    'http://localhost:5173' // Para desarrollo local
+    process.env.BACKEND_URL,
+    'http://localhost:5173', // Para desarrollo local
+    'http://localhost:3000'
 ].filter(Boolean); // Eliminar valores undefined
 
 const corsOptions = {

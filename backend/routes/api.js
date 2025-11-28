@@ -49,6 +49,12 @@ const productValidation = [
         .isLength({ min: 10 }).withMessage('La descripción debe tener al menos 10 caracteres')
 ];
 
+// Helper para construir URL de imagen
+const getImageUrl = (req, imageName) => {
+    const baseUrl = process.env.BACKEND_URL || `${req.protocol}://${req.get('host')}`;
+    return `${baseUrl}/uploads/${imageName}`;
+};
+
 // ========== RUTAS API REST ==========
 
 // GET /api/products - Obtener todos los productos
@@ -63,7 +69,7 @@ router.get('/products', async (req, res) => {
             precio: product.precio,
             descripcion: product.descripcion,
             imagen: product.imagen,
-            imageUrl: `${req.protocol}://${req.get('host')}/uploads/${product.imagen}`,
+            imageUrl: getImageUrl(req, product.imagen),
             categoryId: product.categoryId || 1,
             stock: product.stock || 0,
             createdAt: product.createdAt,
@@ -95,7 +101,7 @@ router.get('/products/:id', async (req, res) => {
             precio: product.precio,
             descripcion: product.descripcion,
             imagen: product.imagen,
-            imageUrl: `${req.protocol}://${req.get('host')}/uploads/${product.imagen}`,
+            imageUrl: getImageUrl(req, product.imagen),
             categoryId: product.categoryId || 1,
             stock: product.stock || 0,
             createdAt: product.createdAt,
@@ -151,7 +157,7 @@ router.post('/products', upload.single('imagen'), productValidation, async (req,
             precio: newProduct.precio,
             descripcion: newProduct.descripcion,
             imagen: newProduct.imagen,
-            imageUrl: `${req.protocol}://${req.get('host')}/uploads/${newProduct.imagen}`,
+            imageUrl: getImageUrl(req, newProduct.imagen),
             categoryId: newProduct.categoryId || 1,
             stock: newProduct.stock || 0,
             createdAt: newProduct.createdAt,
@@ -213,7 +219,7 @@ router.put('/products/:id', upload.single('imagen'), productValidation, async (r
             precio: updatedProduct.precio,
             descripcion: updatedProduct.descripcion,
             imagen: updatedProduct.imagen,
-            imageUrl: `${req.protocol}://${req.get('host')}/uploads/${updatedProduct.imagen}`,
+            imageUrl: getImageUrl(req, updatedProduct.imagen),
             categoryId: updatedProduct.categoryId || 1,
             stock: updatedProduct.stock || 0,
             createdAt: updatedProduct.createdAt,
@@ -262,7 +268,7 @@ router.patch('/products/:id', upload.single('imagen'), async (req, res) => {
             precio: updatedProduct.precio,
             descripcion: updatedProduct.descripcion,
             imagen: updatedProduct.imagen,
-            imageUrl: `${req.protocol}://${req.get('host')}/uploads/${updatedProduct.imagen}`,
+            imageUrl: getImageUrl(req, updatedProduct.imagen),
             categoryId: updatedProduct.categoryId || 1,
             stock: updatedProduct.stock || 0,
             createdAt: updatedProduct.createdAt,
